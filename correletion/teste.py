@@ -4,7 +4,7 @@ import cv2
 
 image_path = 'images/arara.jpeg'
 filtro_path = 'filtros/filtro-gauss.txt'
-output_image_name = 'output/image-correletion-media.png'
+output_image_name = 'output/image-correletion-gauss.png'
 
 # m = linhas
 # n = colunas
@@ -55,28 +55,38 @@ def correlacao(image, m, n, filtro):
             matriz_aux[:,:] = r_padded
             matriz_aux =  matriz_aux * filtro
             pixel_r = (np.sum(matriz_aux))
+            pixel_r = pixel_r + offset
 
             g_padded = transform(g[x:x+m, y:y+n], m, n)
             matriz_aux[:,:] = g_padded
             matriz_aux = matriz_aux * filtro
             pixel_g = (np.sum(matriz_aux))
+            pixel_g = pixel_g + offset
+            
 
             b_padded = transform(b[x:x+m, y:y+n], m, n)
             matriz_aux[:,:] = b_padded
             matriz_aux = matriz_aux * filtro
             pixel_b = (np.sum(matriz_aux))
+            pixel_b = pixel_b + offset
 
             if pixel_b <= 30 and pixel_g <= 30 and pixel_r  <= 30:
                 print(f"RGB = ({pixel_r}, {pixel_g}, {pixel_b})")
             img_matriz[x][y] = pixel_r, pixel_g, pixel_b
+            
         
     filtered_image = Image.fromarray(img_matriz)
     filtered_image.save(output_image_name)
     height, width, canais = img_matriz.shape
     print(f"Imagem com correlacao {height}x{width}")
     
+    
+
+    
 
 matriz = np.array(filtro)
 matriz = matriz.reshape(m,n)
 matriz = matriz.astype(float)
 correlacao(image_path, m,n, matriz)
+
+
