@@ -59,14 +59,11 @@ def correlacao(image, m, n, filtro):
             matriz_aux = matriz_aux * filtro
             pixel_b = (np.sum(matriz_aux))
 
-            if pixel_b <= 30 and pixel_g <= 30 and pixel_r  <= 30:
-                print(f"RGB = ({pixel_r}, {pixel_g}, {pixel_b})")
             img_matriz[x][y] = pixel_r, pixel_g, pixel_b
         
     filtered_image = Image.fromarray(img_matriz)
     filtered_image.save(output_image_name)
     height, width, canais = img_matriz.shape
-    print(f"Imagem com correlacao {height}x{width}")
     
 m,n,offset, filtro = read_filter_file(filtro_path)
 
