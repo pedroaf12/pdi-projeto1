@@ -3,8 +3,8 @@ from PIL import Image
 import cv2
 
 image_path = 'images/arara.jpeg'
-filtro_path = 'filtros/filtro-media.txt'
-output_image_name = 'output/image-correletion-media.png'
+filtro_path = 'filtros/filtro.txt'
+output_image_name = 'output/image-correletion.png'
 
 def transform(matriz, m, n):
     rows, cols = matriz.shape
@@ -47,17 +47,20 @@ def correlacao(image, m, n, filtro):
             r_padded = transform(r[x:x+m, y:y+n], m, n)
             matriz_aux[:,:] = r_padded
             matriz_aux =  matriz_aux * filtro
-            pixel_r = (np.sum(matriz_aux))
-
+            pixel_r = (np.sum(matriz_aux)) + offset
+            pixel_r = max(0, min(255, pixel_r))
+            
             g_padded = transform(g[x:x+m, y:y+n], m, n)
             matriz_aux[:,:] = g_padded
             matriz_aux = matriz_aux * filtro
-            pixel_g = (np.sum(matriz_aux))
+            pixel_g = (np.sum(matriz_aux)) + offset
+            pixel_g = max(0, min(255, pixel_g))
 
             b_padded = transform(b[x:x+m, y:y+n], m, n)
             matriz_aux[:,:] = b_padded
             matriz_aux = matriz_aux * filtro
-            pixel_b = (np.sum(matriz_aux))
+            pixel_b = (np.sum(matriz_aux)) + offset
+            pixel_b = max(0, min(255, pixel_b))
 
             img_matriz[x][y] = pixel_r, pixel_g, pixel_b
         
