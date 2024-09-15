@@ -2,7 +2,7 @@ import numpy as np
 from PIL import Image
 import cv2
 
-image_path = 'images/arara.jpeg'
+image_path = 'images/Lena-gray.png'
 filtro_path = 'filtros/filtro.txt'
 output_image_name = 'output/image-correletion.png'
 
@@ -37,7 +37,7 @@ def correlacao(image, m, n, filtro):
     height, width, canais = imagem.shape
     img_matriz = imagem
 
-    print(f"Imagem original {height}x{width}")
+    print(f"Aplicando correlação do filtro: \n\n{filtro}\n\n em {image}")
                                                                    
     b,g,r = cv2.split(img_matriz)                              
     matriz_aux = np.zeros((m,n), dtype=float)
@@ -48,19 +48,25 @@ def correlacao(image, m, n, filtro):
             matriz_aux[:,:] = r_padded
             matriz_aux =  matriz_aux * filtro
             pixel_r = (np.sum(matriz_aux)) + offset
-            pixel_r = max(0, min(255, pixel_r))
+
+            # Normalização 0,255 para filtros de borda
+            #pixel_r = max(0, min(255, pixel_r))
             
             g_padded = transform(g[x:x+m, y:y+n], m, n)
             matriz_aux[:,:] = g_padded
             matriz_aux = matriz_aux * filtro
             pixel_g = (np.sum(matriz_aux)) + offset
-            pixel_g = max(0, min(255, pixel_g))
+
+            # Normalização 0,255 para filtros de borda
+            #pixel_g = max(0, min(255, pixel_g))
 
             b_padded = transform(b[x:x+m, y:y+n], m, n)
             matriz_aux[:,:] = b_padded
             matriz_aux = matriz_aux * filtro
             pixel_b = (np.sum(matriz_aux)) + offset
-            pixel_b = max(0, min(255, pixel_b))
+
+            # Normalização 0,255 para filtros de borda
+            #pixel_b = max(0, min(255, pixel_b))
 
             img_matriz[x][y] = pixel_r, pixel_g, pixel_b
         
