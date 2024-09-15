@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 image_path = 'images/Lena-gray.png'
 filtro_path = 'filtros/filtro-sobel-horizontal.txt'
-output_image_name = 'output/image-correletion.png'
+output_image_name = 'output/image-correletion-abs.png'
 
 def transform(matriz, m, n):
     rows, cols = matriz.shape
@@ -82,29 +82,20 @@ def correlacao(image, m, n, filtro):
             matriz_aux =  matriz_aux * filtro
             pixel_r = (np.sum(matriz_aux)) + offset
 
-            # Normalização 0,255 para filtros de borda
-            #pixel_r = max(0, min(255, pixel_r))
-            
             g_padded = transform(g[x:x+m, y:y+n], m, n)
             matriz_aux[:,:] = g_padded
             matriz_aux = matriz_aux * filtro
             pixel_g = (np.sum(matriz_aux)) + offset
-
-            # Normalização 0,255 para filtros de borda
-            #pixel_g = max(0, min(255, pixel_g))
 
             b_padded = transform(b[x:x+m, y:y+n], m, n)
             matriz_aux[:,:] = b_padded
             matriz_aux = matriz_aux * filtro
             pixel_b = (np.sum(matriz_aux)) + offset
 
-            # Normalização 0,255 para filtros de borda
-            #pixel_b = max(0, min(255, pixel_b))
-
-            img_matriz[x][y] = pixel_r, pixel_g, pixel_b
+            #img_matriz[x][y] = pixel_r, pixel_g, pixel_b
 
             #Aplicando valor absoluto para expansão de histograma
-            #img_matriz[x][y] = abs(pixel_r), abs(pixel_g), abs(pixel_b)
+            img_matriz[x][y] = abs(pixel_r), abs(pixel_g), abs(pixel_b)
             
     #Função que realizara a expansão por histograma para o sobel
     #histograma(img_matriz, height, width)
