@@ -1,9 +1,10 @@
 import numpy as np
 from PIL import Image
 import cv2
+import matplotlib.pyplot as plt
 
 image_path = 'images/Lena-gray.png'
-filtro_path = 'filtros/filtro.txt'
+filtro_path = 'filtros/filtro-sobel-horizontal.txt'
 output_image_name = 'output/image-correletion.png'
 
 def transform(matriz, m, n):
@@ -26,6 +27,38 @@ def read_filter_file(file):
 
     return m,n, offset, filtro
 
+def histograma(matrix_img, height, width):
+    
+    b,g,r = cv2.split(matrix_img)                              
+    new_matrix_img = matrix_img
+    r_max = np.max(r)
+    r_min = np.min(r)
+    
+    g_max = np.max(g)
+    g_min = np.min(g)
+
+    b_max = np.max(b)
+    b_min = np.min(b)
+
+    l = 256
+
+    for x in range(height):
+        for y in range(width):
+            pixel_r = ((r[x][y]-r_min)/(r_max-r_min))*(l-1)
+            pixel_g = ((g[x][y]-g_min)/(g_max-g_min))*(l-1)
+            pixel_b = ((b[x][y]-b_min)/(b_max-b_min))*(l-1)
+            
+            new_matrix_img[x][y] = pixel_r, pixel_g, pixel_b
+
+
+    plt.subplot(1, 2, 2)
+    plt.hist(new_matrix_img.flatten(), bins=256, color='red', alpha=0.7)
+    plt.title('Histograma da Imagem Expandida após Sobel (Vertical)')
+    plt.xlabel('Intensidade de Pixel')
+    plt.ylabel('Frequência')
+
+    plt.tight_layout()
+    plt.show()
 
 def correlacao(image, m, n, filtro):
     imagem = cv2.imread(image)
@@ -69,7 +102,14 @@ def correlacao(image, m, n, filtro):
             #pixel_b = max(0, min(255, pixel_b))
 
             img_matriz[x][y] = pixel_r, pixel_g, pixel_b
-        
+
+            #Aplicando valor absoluto para expansão de histograma
+            #img_matriz[x][y] = abs(pixel_r), abs(pixel_g), abs(pixel_b)
+            
+    #Função que realizara a expansão por histograma para o sobel
+    #histograma(img_matriz, height, width)
+
+            
     filtered_image = Image.fromarray(img_matriz)
     filtered_image.save(output_image_name)
     height, width, canais = img_matriz.shape
